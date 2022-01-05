@@ -79,7 +79,7 @@ class TrainOREvaluate(object):
             ps = torch.exp(output)
             equality = (labels.data == ps.max(1)[1])
             accuracy += equality.type_as(torch.FloatTensor()).sum()
-        print(f"Accuracy: {accuracy/len(test_set.dataset)}%")
+        print(f"Accuracy: {accuracy*100/len(test_set.dataset)}%")
 
 if __name__ == '__main__':
     TrainOREvaluate()
