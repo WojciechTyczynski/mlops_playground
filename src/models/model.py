@@ -1,15 +1,16 @@
 from torch import nn
 import torch.nn.functional as F
 import torch
+import hydra
 
 
 class MyAwesomeModel(nn.Module):
-    def __init__(self):
+    def __init__(self, dropout1, dropout2):
         super(MyAwesomeModel, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, 3, 1)
         self.conv2 = nn.Conv2d(32, 64, 3, 1)
-        self.dropout1 = nn.Dropout(0.25)
-        self.dropout2 = nn.Dropout(0.5)
+        self.dropout1 = nn.Dropout(dropout1)
+        self.dropout2 = nn.Dropout(dropout2)
         self.fc1 = nn.Linear(9216, 128)
         self.fc2 = nn.Linear(128, 10)
 

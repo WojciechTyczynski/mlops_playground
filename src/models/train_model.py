@@ -4,20 +4,26 @@ import sys
 import torch
 from torch import optim
 from torch import nn
+import hydra
+import os
 
 from model import MyAwesomeModel
 
 import matplotlib.pyplot as plt
 
-
-def main():
-    model = MyAwesomeModel()
-    train_set = torch.load('data/processed/train.pt')
+@hydra.main(config_path="../../conf", config_name= "config.yaml")
+def main(config):
+    os.chdir(hydra.utils.get_original_cwd())
+    training_params = config.training
+    model_params = config.model
+    torch.manual_seed(training_params.seed)
+    model = MyAwesomeModel(model_params.dropout1, model_params.dropout2)
+    train_set = torch.load(training_params.train_data)
     train_losses = []
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr = 0.001)
+    optimizer = optim.Adam(model.parameters(), lr = training_params.lr)
     print("Training day and night")
-    for epoch in range(10):
+    for epoch in range(training_params.epochs):
         running_loss = 0
         model.train()
         n_total_steps = len(train_set)
