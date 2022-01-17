@@ -40,10 +40,10 @@ COPY data.dvc data.dvc
 WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir
 
-RUN dvc pull
-
 RUN export WANDB_API_KEY=$(gcloud secrets versions access latest --secret="WANDB_API_KEY")
 
 RUN wandb login $WANDB_API_KEY
+
+RUN dvc pull
 
 ENTRYPOINT ["python", "-u", "src/models/train_model.py"]
