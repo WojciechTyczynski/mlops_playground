@@ -1,6 +1,8 @@
 # Base image 
 From python:3.7-slim
 ARG WANDB_API_KEY_LOG
+ENV WANDB_API_KEY=$WANDB_API_KEY_LOG
+RUN echo $WANDB_API_KEY_LOG
 # install python 
 RUN apt update && \
 apt install --no-install-recommends -y build-essential gcc && \
@@ -39,8 +41,6 @@ COPY data.dvc data.dvc
 
 WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir
-
-ENV WANDB_API_KEY=$WANDB_API_KEY_LOG
 
 RUN wandb login $WANDB_API_KEY_LOG
 
