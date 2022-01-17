@@ -2,7 +2,6 @@
 From python:3.7-slim
 ARG WANDB_API_KEY_LOG
 ENV WANDB_API_KEY=${WANDB_API_KEY_LOG}
-RUN echo ${WANDB_API_KEY_LOG}
 # install python 
 RUN apt update && \
 apt install --no-install-recommends -y build-essential gcc && \
