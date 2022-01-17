@@ -6,8 +6,11 @@ import matplotlib.pyplot as plt
 import torch
 from model import MyAwesomeModel
 from torch import nn, optim
+
 import wandb
+
 wandb.init(project="MLOps-playground", entity="wojty")
+
 
 @hydra.main(config_path="../../conf", config_name="config.yaml")
 def main(config):
@@ -32,11 +35,11 @@ def main(config):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            wandb.log({"loss": loss/100})
+            wandb.log({"loss": loss / 100})
             running_loss += loss.item()
 
-        train_losses.append(running_loss/n_total_steps)
-    torch.save(model, 'models/model.pth')
+        train_losses.append(running_loss / n_total_steps)
+    torch.save(model, "models/model.pth")
     plt.plot(train_losses)
     plt.xlabel("step")
     plt.ylabel("loss")

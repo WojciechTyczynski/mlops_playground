@@ -13,12 +13,11 @@ class MyAwesomeModel(nn.Module):
         self.fc1 = nn.Linear(9216, 128)
         self.fc2 = nn.Linear(128, 10)
 
-
     def forward(self, x):
 
         if x.shape[1] != 1 or x.shape[2] != 28 or x.shape[3] != 28:
-            print("{}, {}, {}".format(x.shape[1], x.shape[2],x.shape[3]))
-            raise ValueError('Expected each x sample to have shape 1,28,28')
+            print("{}, {}, {}".format(x.shape[1], x.shape[2], x.shape[3]))
+            raise ValueError("Expected each x sample to have shape 1,28,28")
 
         x = self.conv1(x)
         x = F.relu(x)

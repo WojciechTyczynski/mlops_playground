@@ -10,18 +10,19 @@ from data import mnist
 
 
 class TrainOREvaluate(object):
-    """ Helper class that will help launch class methods as commands
-        from a single script
+    """Helper class that will help launch class methods as commands
+    from a single script
     """
+
     def __init__(self):
         parser = argparse.ArgumentParser(
             description="Script for either training or evaluating",
-            usage="python main.py <command>"
+            usage="python main.py <command>",
         )
         parser.add_argument("command", help="Subcommand to run")
         args = parser.parse_args(sys.argv[1:2])
         if not hasattr(self, args.command):
-            print('Unrecognized command')
+            print("Unrecognized command")
 
             parser.print_help()
             exit(1)
@@ -30,9 +31,9 @@ class TrainOREvaluate(object):
 
     def train(self):
         print("Training day and night")
-        parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument('--lr', default=0.001)
-        parser.add_argument('--epochs', default=10)
+        parser = argparse.ArgumentParser(description="Training arguments")
+        parser.add_argument("--lr", default=0.001)
+        parser.add_argument("--epochs", default=10)
         # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
         print(args)
@@ -53,15 +54,15 @@ class TrainOREvaluate(object):
                 loss.backward()
                 optimizer.step()
                 running_loss += loss.item()
-            train_losses.append(running_loss/n_total_steps)
-        torch.save(model, 'model.pth')
+            train_losses.append(running_loss / n_total_steps)
+        torch.save(model, "model.pth")
         plt.plot(train_losses)
         plt.show()
 
     def evaluate(self):
         print("Evaluating until hitting the ceiling")
-        parser = argparse.ArgumentParser(description='Training arguments')
-        parser.add_argument('load_model_from', default="")
+        parser = argparse.ArgumentParser(description="Training arguments")
+        parser.add_argument("load_model_from", default="")
         # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
         print(args)
@@ -70,13 +71,13 @@ class TrainOREvaluate(object):
         model = torch.load(args.load_model_from)
         _, test_set = mnist()
         accuracy = 0
-        for i,  (images, labels) in enumerate(test_set):
+        for i, (images, labels) in enumerate(test_set):
             output = model.forward(images)
             ps = torch.exp(output)
-            equality = (labels.data == ps.max(1)[1])
+            equality = labels.data == ps.max(1)[1]
             accuracy += equality.type_as(torch.FloatTensor()).sum()
         print(f"Accuracy: {accuracy*100/len(test_set.dataset)}%")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     TrainOREvaluate()

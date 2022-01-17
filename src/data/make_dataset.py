@@ -13,17 +13,17 @@ from torchvision import transforms
 
 
 @click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
+@click.argument("input_filepath", type=click.Path(exists=True))
+@click.argument("output_filepath", type=click.Path())
 def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    """Runs data processing scripts to turn raw data from (../raw) into
+    cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info("making final data set from raw data")
 
-    train_files = glob.glob(f'{input_filepath}/train*.npz')
-    test_files = glob.glob(f'{input_filepath}/test*.npz')
+    train_files = glob.glob(f"{input_filepath}/train*.npz")
+    test_files = glob.glob(f"{input_filepath}/test*.npz")
 
     images_train = []
     labels_train = []
@@ -32,29 +32,27 @@ def main(input_filepath, output_filepath):
 
     for file in train_files:
         data_loaded = load(file)
-        images_train.extend(data_loaded['images'])
-        labels_train.extend(data_loaded['labels'])
+        images_train.extend(data_loaded["images"])
+        labels_train.extend(data_loaded["labels"])
 
     for file in test_files:
         data_loaded = load(file)
-        images_test.extend(data_loaded['images'])
-        labels_test.extend(data_loaded['labels'])
+        images_test.extend(data_loaded["images"])
+        labels_test.extend(data_loaded["labels"])
 
     x_train = torch.Tensor(np.array(images_train))
-    x_train = x_train.reshape(x_train.shape[0], 1,
-                            x_train.shape[1], x_train.shape[1])
+    x_train = x_train.reshape(x_train.shape[0], 1, x_train.shape[1], x_train.shape[1])
     y_train = torch.from_numpy(np.array(labels_train))
 
     x_test = torch.Tensor(np.array(images_test))
-    x_test = x_test.reshape(x_test.shape[0], 1,
-                            x_test.shape[1], x_test.shape[1])
+    x_test = x_test.reshape(x_test.shape[0], 1, x_test.shape[1], x_test.shape[1])
     y_test = torch.from_numpy(np.array(labels_test))
 
     normalize = transforms.Normalize((0.5,), (0.5,))
 
-    train = DataLoader(TensorDataset(normalize(x_train), y_train),
-                        shuffle=True,
-                        batch_size=100)
+    train = DataLoader(
+        TensorDataset(normalize(x_train), y_train), shuffle=True, batch_size=100
+    )
 
     test = DataLoader(TensorDataset(normalize(x_test), y_test))
 
@@ -62,8 +60,8 @@ def main(input_filepath, output_filepath):
     torch.save(test, f"{output_filepath}/test.pt")
 
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+if __name__ == "__main__":
+    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     # not used in this stub but often useful for finding various files
