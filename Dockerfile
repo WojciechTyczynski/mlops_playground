@@ -40,7 +40,7 @@ COPY data.dvc data.dvc
 WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir
 
-RUN wandb login $WANDB_API_KEY
+RUN wandb login $WANDB_API_KEY_LOG
 
 RUN dvc pull
 
