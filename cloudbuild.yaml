@@ -1,9 +1,10 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/dtumlops-337913/training', './docker/train/']
+  secretEnv: ['WANDB_API_KEY']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/dtumlops-337913/training']
 availableSecrets:
   secretManager:
   - versionName: projects/953607909724/secrets/WANDB_API_KEY/versions/1
-  env: 'WANDB_API_KEY'
+    env: 'WANDB_API_KEY'
