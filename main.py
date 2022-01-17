@@ -1,14 +1,12 @@
 import argparse
 import sys
 
-import torch
-from torch import optim
-from torch import nn
-
 import matplotlib.pyplot as plt
+import torch
+from model import MyAwesomeModel
+from torch import nn, optim
 
 from data import mnist
-from model import MyAwesomeModel
 
 
 class TrainOREvaluate(object):
@@ -24,12 +22,12 @@ class TrainOREvaluate(object):
         args = parser.parse_args(sys.argv[1:2])
         if not hasattr(self, args.command):
             print('Unrecognized command')
-            
+
             parser.print_help()
             exit(1)
         # use dispatch pattern to invoke method with same name
         getattr(self, args.command)()
-    
+
     def train(self):
         print("Training day and night")
         parser = argparse.ArgumentParser(description='Training arguments')
@@ -38,13 +36,13 @@ class TrainOREvaluate(object):
         # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
         print(args)
-        
+
         # TODO: Implement training loop here
         model = MyAwesomeModel()
         train_set, _ = mnist()
         train_losses = []
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr = args.lr)
+        optimizer = optim.Adam(model.parameters(), lr=args.lr)
         for epoch in range(args.epochs):
             running_loss = 0
             n_total_steps = len(train_set)
@@ -59,7 +57,7 @@ class TrainOREvaluate(object):
         torch.save(model, 'model.pth')
         plt.plot(train_losses)
         plt.show()
-        
+
     def evaluate(self):
         print("Evaluating until hitting the ceiling")
         parser = argparse.ArgumentParser(description='Training arguments')
@@ -67,12 +65,10 @@ class TrainOREvaluate(object):
         # add any additional argument that you want
         args = parser.parse_args(sys.argv[2:])
         print(args)
-        
+
         # TODO: Implement evaluation logic here
         model = torch.load(args.load_model_from)
         _, test_set = mnist()
-        dataiter = iter(test_set)
-        criterion = nn.NLLLoss()
         accuracy = 0
         for i,  (images, labels) in enumerate(test_set):
             output = model.forward(images)
@@ -81,14 +77,6 @@ class TrainOREvaluate(object):
             accuracy += equality.type_as(torch.FloatTensor()).sum()
         print(f"Accuracy: {accuracy*100/len(test_set.dataset)}%")
 
+
 if __name__ == '__main__':
     TrainOREvaluate()
-    
-    
-    
-    
-    
-    
-    
-    
-    

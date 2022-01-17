@@ -1,17 +1,15 @@
 import argparse
-import sys
-
-import torch
-from torch import optim
-from torch import nn
-import hydra
 import os
 
-from model import MyAwesomeModel
-
+import hydra
 import matplotlib.pyplot as plt
+import torch
+from model import MyAwesomeModel
+from torch import nn, optim
+import wandb
+wandb.init(project="MLOps-playground", entity="wojty")
 
-@hydra.main(config_path="../../conf", config_name= "config.yaml")
+@hydra.main(config_path="../../conf", config_name="config.yaml")
 def main(config):
     os.chdir(hydra.utils.get_original_cwd())
     training_params = config.training
@@ -21,8 +19,9 @@ def main(config):
     train_set = torch.load(training_params.train_data)
     train_losses = []
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr = training_params.lr)
+    optimizer = optim.Adam(model.parameters(), lr=training_params.lr)
     print("Training day and night")
+    wandb.watch(model, log_freq=100)
     for epoch in range(training_params.epochs):
         running_loss = 0
         model.train()
@@ -33,14 +32,16 @@ def main(config):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            wandb.log({"loss": loss/100})
             running_loss += loss.item()
-            
+
         train_losses.append(running_loss/n_total_steps)
     torch.save(model, 'models/model.pth')
     plt.plot(train_losses)
     plt.xlabel("step")
     plt.ylabel("loss")
     plt.savefig("reports/figures/training.png")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

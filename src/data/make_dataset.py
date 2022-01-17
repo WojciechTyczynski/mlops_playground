@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-import click
+import glob
 import logging
 from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
-import torch
-from torch.utils.data import TensorDataset, DataLoader
-from torchvision import transforms
-from numpy import load
+
+import click
 import numpy as np
-import glob
+import torch
+from dotenv import find_dotenv, load_dotenv
+from numpy import load
+from torch.utils.data import DataLoader, TensorDataset
+from torchvision import transforms
 
 
 @click.command()
@@ -23,7 +24,6 @@ def main(input_filepath, output_filepath):
 
     train_files = glob.glob(f'{input_filepath}/train*.npz')
     test_files = glob.glob(f'{input_filepath}/test*.npz')
-
 
     images_train = []
     labels_train = []
@@ -41,19 +41,21 @@ def main(input_filepath, output_filepath):
         labels_test.extend(data_loaded['labels'])
 
     x_train = torch.Tensor(np.array(images_train))
-    x_train = x_train.reshape(x_train.shape[0], 1, x_train.shape[1], x_train.shape[1])
+    x_train = x_train.reshape(x_train.shape[0], 1,
+                            x_train.shape[1], x_train.shape[1])
     y_train = torch.from_numpy(np.array(labels_train))
 
     x_test = torch.Tensor(np.array(images_test))
-    x_test = x_test.reshape(x_test.shape[0], 1, x_test.shape[1], x_test.shape[1])
+    x_test = x_test.reshape(x_test.shape[0], 1,
+                            x_test.shape[1], x_test.shape[1])
     y_test = torch.from_numpy(np.array(labels_test))
 
     normalize = transforms.Normalize((0.5,), (0.5,))
 
     train = DataLoader(TensorDataset(normalize(x_train), y_train),
-                    shuffle=True,
-                    batch_size=64)
-    
+                        shuffle=True,
+                        batch_size=100)
+
     test = DataLoader(TensorDataset(normalize(x_test), y_test))
 
     torch.save(train, f"{output_filepath}/train.pt")
