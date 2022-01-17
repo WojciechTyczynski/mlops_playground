@@ -18,3 +18,4 @@ src/visualization/__init__.py
 src/visualization/visualize.py
 tests/__init__.py
 tests/test_data.py
+tests/test_model.py
