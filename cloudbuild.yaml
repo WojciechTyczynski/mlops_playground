@@ -3,10 +3,10 @@ steps:
   entrypoint: 'bash'
   args: [ '-c', 'docker build -t gcr.io/dtumlops-337913/training . --build-arg WANDB_API_KEY_LOG=$$WANDB_API_KEY --no-cache']
   secretEnv: ['WANDB_API_KEY']
-  timeout: 1800s
+  timeout: '1800s'
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/dtumlops-337913/training']
-  timeout: 1800s
+  timeout: '1800s'
 availableSecrets:
   secretManager:
   - versionName: projects/953607909724/secrets/WANDB_API_KEY/versions/1
